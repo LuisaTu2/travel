@@ -1,68 +1,59 @@
 import boto3
-from models.photos import Photo, TableStatus
+from models.photos import KeyType
+from constants import BILLING_MODE, DYNAMO_DB
+
+def exceptions():
+    return boto3.client(DYNAMO_DB).exceptions
 
 
-PHOTOS = "beograd"
-BILLING_MODE = "PAY_PER_REQUEST"
-COUNTER_ID = "counter"
+def get_db():
+    try:
+        db = boto3.resource(DYNAMO_DB)
+    except Exception as e:
+        raise Exception(f"[get_db] unable to get db, {e}")
+    else:
+        return db
 
 
-client = boto3.client(
-    "dynamodb",
-)
-dynamodb = boto3.resource(
-    "dynamodb",
-)
-
-photos = dynamodb.Table(PHOTOS)
-
-
-def get_counter():
-    if photos.table_status == TableStatus.ACTIVE:
-        try:
-            counter = photos.get_item(
-                TableName=PHOTOS,
-                Key={"id": COUNTER_ID},
-                AttributesToGet=["value"],
-            )
-            if counter:
-                return counter["Item"]["value"]
-        except:
-            raise Exception("[GET-COUNTER] could not get index counter")
-
-
-def update_counter(value: int):
-    if photos.table_status == TableStatus.ACTIVE:
-        return photos.put_item(
-            TableName=PHOTOS, Item={"id": COUNTER_ID, "value": value}
-        )
-
-
-def connect_db():
-
-    tables = client.list_tables()["TableNames"]
-
-    if not tables:
-        # TODO: add timestamp
-        dynamodb.create_table(
-            AttributeDefinitions=[{"AttributeName": "id", "AttributeType": "S"}],
-            TableName=PHOTOS,
-            KeySchema=[{"AttributeName": "id", "KeyType": "HASH"}],
+def create_table(table_name: str):
+    try:
+        db = get_db()
+        db.create_table(
+            AttributeDefinitions=[
+                {"AttributeName": "pk", "AttributeType": "S"},
+                {"AttributeName": "sk", "AttributeType": "S"},
+            ],
+            TableName=table_name,
+            KeySchema=[
+                {"AttributeName": "pk", "KeyType": KeyType.HASH},
+                {"AttributeName": "sk", "KeyType": KeyType.RANGE},
+            ],
             BillingMode=BILLING_MODE,
         )
+    except exceptions().ResourceInUseException as e:
+        print(f"[create_table] table {table_name} already exists \n {e}")
+        pass
+
+    except Exception as e:
+        raise Exception(
+            f"[create_table] could not create table {table_name} in aws.dynamodb \n {e}"
+        )
+
+
+def get_table(table_name: str):
+    try:
+        db = get_db()
+        table = db.Table(table_name)
+    except Exception as e:
+        raise Exception(f"[get_table] unable to get table {table_name} \n {e}")
     else:
-        counter = get_counter()
-        if not counter:
-            update_counter(0)
+        return table
 
 
-def add_photo(title, description):
-    counter = get_counter()
-    counter += 1
-    photo = photos.get_item(TableName=PHOTOS, Key={"id": str(counter)})
-    if "Item" in photo:
-        raise Exception(f"[ADD-PHOTO] photo ix {counter} already exists")
-    description = description + " " + str(counter)
-    photo: Photo = Photo(id=str(counter), title=title, description=description, likes=0)
-    photos.put_item(TableName=PHOTOS, Item=dict(photo))
-    photos.put_item(TableName=PHOTOS, Item={"id": COUNTER_ID, "value": counter})
+def delete_table(table_name: str):
+    try:
+        table = get_table(table_name)
+        table.delete()
+    except exceptions().ResourceNotFoundException as e:
+        print(f"[delete_table] table {table_name} not found \n {e}")
+        pass

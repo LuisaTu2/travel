@@ -14,6 +14,11 @@ class TableStatus(str, Enum):
     ARCHIVED = "ARCHIVED"
 
 
+class KeyType(str, Enum):
+    HASH = "HASH"
+    RANGE = "RANGE"
+
+
 class Comment(BaseModel):
     id: str
     photo_id: str

@@ -4,8 +4,9 @@ from dynamodb import *
 
 app = Flask(__name__)
 
-# try to find a way to ensure app is created?
-connect_db()
+# initialize db connection and create table
+# create_table("photos")
+# delete_table("photos")
 
 
 @app.route("/")
@@ -16,5 +17,5 @@ def travel():
 
 @app.route("/create-photo")
 def create_photo():
-    add_photo("title 2", "another description")
+    # add_photo("title 2", "another description")
     return "created a new photo"
