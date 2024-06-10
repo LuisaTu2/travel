@@ -25,9 +25,10 @@ class Comment(BaseModel):
     text: str
 
 
-class Photo(BaseModel):
-    id: str
+class Item(BaseModel):
+    pk: str
+    sk: str
     title: str
     description: str
-    likes: int
+    likes: int = 0
     comments: List[Comment] = []
