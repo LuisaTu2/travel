@@ -1,3 +1,4 @@
+from constants import TRAVELS
 from pydantic import BaseModel
 from typing import List
 
@@ -26,10 +27,16 @@ class Comment(BaseModel):
 
 
 class Item(BaseModel):
+    table_name: str
     pk: str
     sk: str
-    title: str
-    description: str
+
+
+class Photo(Item):
+    table_name: str = TRAVELS
+    title: str = ""
+    description: str = ""
     likes: int = 0
     doggo: int = 0
+    mačka: int = 0
     comments: List[Comment] = []

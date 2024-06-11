@@ -1,14 +1,13 @@
-from flask import Flask
-from models.photos import Item
-from constants import TABLE_NAME
-from db import put_item, delete_item, update_reaction
+from flask import Flask, request
+from models.photos import Photo
+from db import Database
 
 
 app = Flask(__name__)
 
-# initialize db connection and create table
-# create_table("photos")
-# delete_table("photos")
+db = Database()
+# db.create_table(TRAVELS)
+# db.delete_table(TRAVELS)
 
 
 @app.route("/")
@@ -17,34 +16,30 @@ def travel():
     return f"<p>{s}</p>"
 
 
-@app.route("/add-photo")
+# POST WITH JSON
+# curl --header "Content-Type: application/json" -X POST -d '{"pk": "photos", "sk": "beograd:2000" , "title": "flower" , "description" : "a pretty flower"}'  http://localhost:5000/add-photo
+@app.route("/add-photo", methods=["POST"])
 def add_photo():
-    title = "doggo & curtains"
-    description = "hot day for a cute doggo"
-    partition_key = "photos"
-    city = "beograd"
-    counter = "3000"
-    sort_key = city + "#" + counter
-    photo = Item(
-        pk=partition_key,
-        sk=sort_key,
-        title=title,
-        description=description,
-        likes=5,
-        doggo=3,
-    )
-    put_item(TABLE_NAME, dict(photo))
-    return "created a new photo"
+    photo = Photo.parse_obj(request.get_json())
+    db.put_item(item=photo)
+    return f"[add_photo] created new photo pk:{photo.pk}, sk: {photo.sk}\n"
 
 
-@app.route("/delete-photo")
+# POST WITH JSON
+# curl --header "Content-Type: application/json" -X POST -d '{"pk": "photos", "sk": "beograd:2000"}'  http://localhost:5000/delete-photo
+@app.route("/delete-photo", methods=["POST"])
 def delete_photo():
-    delete_item(TABLE_NAME, "photos", "beograd#2000")
-    return "deleted photo"
+    photo = Photo.parse_obj(request.get_json())
+    db.delete_item(item=photo)
+    return f"[delete_photo] deleted photo pk:{photo.pk}, sk: {photo.sk}\n"
 
 
-@app.route("/add-reaction")
+# TODO: find a way for mačka!
+# curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"pk": "photos", "sk": "beograd:2000", "reaction": "likes"}'  http://localhost:5000/add-reaction
+@app.route("/add-reaction", methods=["POST"])
 def add_reaction():
-    update_reaction(TABLE_NAME, "photos", "beograd#2000", "likes")
-    update_reaction(TABLE_NAME, "photos", "beograd#3000", "doggo")
-    return f"incremented reactions"
+    data = request.get_json()
+    photo = Photo(pk=data["pk"], sk=data["sk"])
+    reaction = data["reaction"]
+    db.increment_reaction(photo=photo, reaction=reaction)
+    return f"[add_reaction] incremented reaction for photo pk:{photo.pk}, sk: {photo.sk}, reaction={reaction}\n"
