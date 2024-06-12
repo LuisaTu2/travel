@@ -86,3 +86,28 @@ class Database:
             raise Exception(
                 f"[update_reaction] could not update attribute {reaction} for item {photo.pk, photo.sk} \n {e}"
             )
+
+    def add_comment(self, photo: Photo, comment: str):
+        try:
+            table = self.get_table(photo.table_name)
+            table.update_item(
+                Key={"pk": photo.pk, "sk": photo.sk},
+                UpdateExpression="set comments = list_append(comments, :comment)",
+                ExpressionAttributeValues={":comment": [comment]},
+            )
+        except Exception as e:
+            raise Exception(
+                f"[add_comment] could not add comment to photo {photo.pk, photo.sk} \n {e}"
+            )
+
+    def delete_comment(self, photo: Photo, position: int):
+        try:
+            table = self.get_table(photo.table_name)
+            table.update_item(
+                Key={"pk": photo.pk, "sk": photo.sk},
+                UpdateExpression=f"remove comments[{position}]",
+            )
+        except Exception as e:
+            raise Exception(
+                f"[delete_comment] could not delete comment from photo {photo.pk, photo.sk} \n {e}"
+            )

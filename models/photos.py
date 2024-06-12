@@ -20,12 +20,6 @@ class KeyType(str, Enum):
     RANGE = "RANGE"
 
 
-class Comment(BaseModel):
-    id: str
-    photo_id: str
-    text: str
-
-
 class Item(BaseModel):
     table_name: str
     pk: str
@@ -39,4 +33,4 @@ class Photo(Item):
     likes: int = 0
     doggo: int = 0
     mačka: int = 0
-    comments: List[Comment] = []
+    comments: List[str] = []

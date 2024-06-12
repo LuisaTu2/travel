@@ -43,3 +43,23 @@ def add_reaction():
     reaction = data["reaction"]
     db.increment_reaction(photo=photo, reaction=reaction)
     return f"[add_reaction] incremented reaction for photo pk:{photo.pk}, sk: {photo.sk}, reaction={reaction}\n"
+
+
+# curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"pk": "photos", "sk": "beograd:2000", "comment": "nice job, luisa!"}'  http://localhost:5000/add-comment
+@app.route("/add-comment", methods=["POST"])
+def add_comment():
+    data = request.get_json()
+    photo = Photo(pk=data["pk"], sk=data["sk"])
+    comment = data["comment"]
+    db.add_comment(photo=photo, comment=comment)
+    return f"[add_comment] added new comment to photo pk:{photo.pk}, sk: {photo.sk}, comment={comment}\n"
+
+
+# curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"pk": "photos", "sk": "beograd:2000", "position": 1}'  http://localhost:5000/delete-comment
+@app.route("/delete-comment", methods=["POST"])
+def delete_comment():
+    data = request.get_json()
+    photo = Photo(pk=data["pk"], sk=data["sk"])
+    position = data["position"]
+    db.delete_comment(photo=photo, position=position)
+    return f"[delete_comment] deleted comment from photo pk:{photo.pk}, sk: {photo.sk}, psn={position}\n"
