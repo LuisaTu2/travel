@@ -1,4 +1,4 @@
-from models.db import Action, UpdateItemRequest, UpdatePhotoRequest
+from models import Action, UpdateItemRequest, UpdatePhotoRequest
 
 
 def build_update_item_request(data: dict):

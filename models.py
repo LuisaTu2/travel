@@ -5,6 +5,8 @@ from pydantic import BaseModel
 from typing_extensions import TypedDict
 
 
+# DynamoDB models
+
 class KeyType(str, Enum):
     HASH = "HASH"
     RANGE = "RANGE"
@@ -50,6 +52,34 @@ class Key(TypedDict):
     sk: str = ""
 
 
+class UpdateItemRequest(BaseModel):
+    key: Key
+    update_expression: str
+    expression_attribute_values: Optional[dict] = None
+
+
+class TableStatus(str, Enum):
+    CREATING = "CREATING"
+    UPDATING = "UPDATING"
+    DELETING = "DELETING"
+    ACTIVE = "ACTIVE"
+    INACCESSIBLE_ENCRYPTION_CREDENTIALS = "INACCESSIBLE_ENCRYPTION_CREDENTIALS"
+    ARCHIVING = "ARCHIVING"
+    ARCHIVED = "ARCHIVED"
+
+
+# travels table models
+
+class Photo(Item):
+    title: str = ""
+    description: str = ""
+    link: str = ""
+    likes: int = 0
+    doggo: int = 0
+    macka: int = 0
+    comments: List[str] = []
+
+
 class Action(str, Enum):
     INCREMENT_REACTION = "INCREMENT_REACTION"
     ADD_COMMENT = "ADD_COMMENT"
@@ -68,19 +98,3 @@ class UpdatePhotoRequest(BaseModel):
     reaction: Optional[Reaction] = None
     comment: Optional[str] = None
     position: Optional[int] = None
-
-
-class UpdateItemRequest(BaseModel):
-    key: Key
-    update_expression: str
-    expression_attribute_values: Optional[dict] = None
-
-
-class TableStatus(str, Enum):
-    CREATING = "CREATING"
-    UPDATING = "UPDATING"
-    DELETING = "DELETING"
-    ACTIVE = "ACTIVE"
-    INACCESSIBLE_ENCRYPTION_CREDENTIALS = "INACCESSIBLE_ENCRYPTION_CREDENTIALS"
-    ARCHIVING = "ARCHIVING"
-    ARCHIVED = "ARCHIVED"

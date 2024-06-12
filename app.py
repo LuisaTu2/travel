@@ -1,9 +1,9 @@
 from flask import Flask, request
 
 from constants import TRAVELS
-from db import DynamoDB
-from helpers.helpers import build_update_item_request
-from models.photos import Photo
+from db.db import DynamoDB
+from db.helpers import build_update_item_request
+from models import Photo
 
 PARTITION_KEY = "pk"
 SORT_KEY = "sk"
@@ -41,9 +41,9 @@ def delete_photo():
 
 # TODO: find a way for mačka!
 # TODO: find a way for deleting a comment
-# curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photos", "sk": "beograd:2000"},  "action": "INCREMENT_REACTION", "reaction": "doggo" }'  http://localhost:5000/update-photo
-# curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photos", "sk": "beograd:3000"}, "action": "ADD_COMMENT", "comment": "sunshine"}'  http://localhost:5000/update-photo
-# curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photos", "sk": "beograd:2000"}, "action": "DELETE_COMMENT", "position": 0}'  http://localhost:5000/update-photo
+# curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photos", "sk": "beograd:4000"},  "action": "INCREMENT_REACTION", "reaction": "doggo" }'  http://localhost:5000/update-photo
+# curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photos", "sk": "beograd:4000"}, "action": "ADD_COMMENT", "comment": "sunshine"}'  http://localhost:5000/update-photo
+# curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photos", "sk": "beograd:4000"}, "action": "DELETE_COMMENT", "position": 0}'  http://localhost:5000/update-photo
 @app.route("/update-photo", methods=["POST"])
 def update_photo():
     data = request.get_json()
