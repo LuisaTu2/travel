@@ -1,2 +1,1 @@
 TRAVELS = "travels"
-BILLING_MODE = "PAY_PER_REQUEST"

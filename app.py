@@ -1,12 +1,17 @@
 from flask import Flask, request
-from models.photos import Photo
-from db import Database
 
+from constants import TRAVELS
+from db import DynamoDB
+from helpers.helpers import build_update_item_request
+from models.photos import Photo
+
+PARTITION_KEY = "pk"
+SORT_KEY = "sk"
 
 app = Flask(__name__)
 
-db = Database()
-# db.create_table(TRAVELS)
+db = DynamoDB()
+# db.create_travel_table()
 # db.delete_table(TRAVELS)
 
 
@@ -17,12 +22,12 @@ def travel():
 
 
 # POST WITH JSON
-# curl --header "Content-Type: application/json" -X POST -d '{"pk": "photos", "sk": "beograd:2000" , "title": "flower" , "description" : "a pretty flower"}'  http://localhost:5000/add-photo
+# curl --header "Content-Type: application/json" -X POST -d '{"pk": "photos", "sk": "beograd:4000" , "title": "bazam" , "description" : "thunderstorm"}'  http://localhost:5000/add-photo
 @app.route("/add-photo", methods=["POST"])
 def add_photo():
     photo = Photo.parse_obj(request.get_json())
-    db.put_item(item=photo)
-    return f"[add_photo] created new photo pk:{photo.pk}, sk: {photo.sk}\n"
+    db.put_item(TRAVELS, item=photo)
+    return f"[r-add-photo] created new photo pk:{photo.pk}, sk: {photo.sk}\n"
 
 
 # POST WITH JSON
@@ -30,36 +35,18 @@ def add_photo():
 @app.route("/delete-photo", methods=["POST"])
 def delete_photo():
     photo = Photo.parse_obj(request.get_json())
-    db.delete_item(item=photo)
-    return f"[delete_photo] deleted photo pk:{photo.pk}, sk: {photo.sk}\n"
+    db.delete_item(TRAVELS, item=photo)
+    return f"[r-delete_photo] deleted photo pk:{photo.pk}, sk: {photo.sk}\n"
 
 
 # TODO: find a way for mačka!
-# curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"pk": "photos", "sk": "beograd:2000", "reaction": "likes"}'  http://localhost:5000/add-reaction
-@app.route("/add-reaction", methods=["POST"])
-def add_reaction():
+# TODO: find a way for deleting a comment
+# curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photos", "sk": "beograd:2000"},  "action": "INCREMENT_REACTION", "reaction": "doggo" }'  http://localhost:5000/update-photo
+# curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photos", "sk": "beograd:3000"}, "action": "ADD_COMMENT", "comment": "sunshine"}'  http://localhost:5000/update-photo
+# curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photos", "sk": "beograd:2000"}, "action": "DELETE_COMMENT", "position": 0}'  http://localhost:5000/update-photo
+@app.route("/update-photo", methods=["POST"])
+def update_photo():
     data = request.get_json()
-    photo = Photo(pk=data["pk"], sk=data["sk"])
-    reaction = data["reaction"]
-    db.increment_reaction(photo=photo, reaction=reaction)
-    return f"[add_reaction] incremented reaction for photo pk:{photo.pk}, sk: {photo.sk}, reaction={reaction}\n"
-
-
-# curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"pk": "photos", "sk": "beograd:2000", "comment": "nice job, luisa!"}'  http://localhost:5000/add-comment
-@app.route("/add-comment", methods=["POST"])
-def add_comment():
-    data = request.get_json()
-    photo = Photo(pk=data["pk"], sk=data["sk"])
-    comment = data["comment"]
-    db.add_comment(photo=photo, comment=comment)
-    return f"[add_comment] added new comment to photo pk:{photo.pk}, sk: {photo.sk}, comment={comment}\n"
-
-
-# curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"pk": "photos", "sk": "beograd:2000", "position": 1}'  http://localhost:5000/delete-comment
-@app.route("/delete-comment", methods=["POST"])
-def delete_comment():
-    data = request.get_json()
-    photo = Photo(pk=data["pk"], sk=data["sk"])
-    position = data["position"]
-    db.delete_comment(photo=photo, position=position)
-    return f"[delete_comment] deleted comment from photo pk:{photo.pk}, sk: {photo.sk}, psn={position}\n"
+    req = build_update_item_request(data)
+    db.update_item(TRAVELS, req)
+    return f"[r-update-photo] updated photo {req} \n"
