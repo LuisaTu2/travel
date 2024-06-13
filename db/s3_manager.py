@@ -91,3 +91,9 @@ class S3Manager:
 
     def get_file_url(self, bucket_name, file_name):
         return f"https://{bucket_name}.s3.{self.region}.amazonaws.com/{file_name}"
+
+    def delete_file(self, bucket_name, file_name):
+        try:
+            self.client.delete_object(Bucket=bucket_name, Key=file_name)
+        except ClientError as e:
+            print(e)

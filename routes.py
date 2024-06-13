@@ -7,7 +7,7 @@ def register_routes(app: Flask, db):
     @app.route("/")
     def travel():
         s = "travel the world little bug"
-        return f"<div><p>{s}</p><img src='https://travels-photos-00.s3.us-east-2.amazonaws.com/beograd:3000:morning-run.jpg'></div>"
+        return f"<div><p>{s}</p><img src='https://travels-photos-00.s3.us-east-2.amazonaws.com/beograd:3000'></div>"
 
     # TODO: find a way for mačka!
     # curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photos", "sk": "beograd:6677"},  "action": "INCREMENT_REACTION", "reaction": "doggo" }'  http://localhost:5000/update-photo

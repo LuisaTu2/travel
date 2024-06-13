@@ -1,8 +1,9 @@
 import boto3
 from mypy_boto3_dynamodb.client import DynamoDBClient
 from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource, Table
+from botocore.exceptions import ClientError
 
-from constants import DYNAMODB
+from constants import DYNAMODB, PARTITION_KEY, SORT_KEY
 from models import CreateTableRequest, Item, Photo, UpdateItemRequest
 
 
@@ -53,7 +54,7 @@ class DynamoDBManager:
         try:
             table = self.get_table(table_name)
             table.put_item(TableName=table_name, Item=dict(item))
-        except Exception as e:
+        except ClientError as e:
             raise Exception(
                 f"[add_photo] could not add photo {item} to table {table_name} \n {e}"
             )
