@@ -1,3 +1,5 @@
+from botocore.exceptions import ClientError
+
 from constants import PARTITION_KEY, SORT_KEY, TRAVELS
 from db.ddb_manager import DynamoDBManager
 from models import (
@@ -51,9 +53,9 @@ class Travels(DynamoDBManager):
                 billing_mode=BillingMode.PAY_PER_REQUEST,
             )
             self.create_table(request)
-        except Exception as e:
+        except ClientError as e:
             raise Exception(
-                f"[create_travel_table] could not create travel table db \n {e}"
+                f"[create_travels_table] could not create {TRAVELS} table db \n {e}"
             )
 
     def build_update_item_request(self, data: dict):

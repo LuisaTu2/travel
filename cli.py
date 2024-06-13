@@ -1,7 +1,7 @@
 import click
 from flask import Flask
 
-from constants import TRAVELS
+from constants import PARTITION_KEY_NAME, TRAVELS
 from models import Action, Photo, UpdatePhotoRequest
 
 
@@ -122,3 +122,55 @@ def register_cli(app: Flask, db, s3):
         files = s3.list_files(bucket_name)
         print(files)
         click.echo(f"[cli-list-files] files in {bucket_name} bucket")
+
+    # PHOTOS
+    # flask upload-photos "images" "travels-photos-00" "travels"
+    @app.cli.command("upload-photos")
+    @click.argument("folder_path")
+    @click.argument("bucket_name")
+    @click.argument("table_name")
+    def upload_photos(folder_path, bucket_name, table_name):
+        import json
+        from os import listdir
+        from os.path import isfile, join
+
+        from botocore.exceptions import ClientError
+
+        try:
+            file_names = [
+                file
+                for file in listdir(f"{folder_path}")
+                if isfile(join(f"{folder_path}", file)) and not file.endswith(".json")
+            ]
+            with open("images/descriptions.json") as j:
+                descriptions = json.load(j)
+
+            for file_name in file_names:
+                # first try uploading to s3
+                s3.upload_file(folder_path + "/" + file_name, bucket_name, file_name)
+
+                # then store photo item in dynamodb
+                name = file_name.split(".")[0]
+                sk = name.split(":")[0] + ":" + name.split(":")[1]
+                title = name.split(":")[2]
+                description = descriptions[name]
+                url = s3.get_file_url(bucket_name, file_name)
+                photo = Photo(
+                    pk=PARTITION_KEY_NAME,
+                    sk=sk,
+                    title=title,
+                    description=description,
+                    link=url,
+                )
+                db.put_item(table_name, photo)
+
+                print(
+                    f"[cli-upload-photos] successfully uploaded photo {PARTITION_KEY_NAME}:{sk}"
+                )
+
+        except ClientError as e:
+            print(e)
+        else:
+            click.echo(
+                f"[cli-upload-photos] uploaded files to s3 {bucket_name} bucket and ddb {table_name} table\n"
+            )

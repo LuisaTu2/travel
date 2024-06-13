@@ -4,7 +4,7 @@ from os.path import isfile, join
 import boto3
 from botocore.exceptions import ClientError
 
-from constants import S3
+from constants import S3, S3_REGION
 from db.bucket_policy import get_bucket_policy
 
 
@@ -12,13 +12,14 @@ class S3Manager:
     def __init__(self) -> None:
         self.client = boto3.client(S3)
         self.s3 = boto3.resource(S3)
+        self.region = S3_REGION
 
     def create_bucket(self, bucket_name: str):
         try:
             self.s3.create_bucket(
                 Bucket=bucket_name,
                 CreateBucketConfiguration={
-                    "LocationConstraint": "us-east-2",
+                    "LocationConstraint": self.region,
                 },
             )
         except ClientError as e:
@@ -59,6 +60,9 @@ class S3Manager:
                 file_path,
                 bucket_name,
                 object_name,
+                # ExtraArgs={
+                #     "ContentType": "image/jpeg",
+                # },
             )
         except ClientError as e:
             print(e)
@@ -68,7 +72,7 @@ class S3Manager:
             file_names = [
                 file
                 for file in listdir(f"{folder_path}")
-                if isfile(join(f"{folder_path}", file))
+                if isfile(join(f"{folder_path}", file)) and not file.endswith(".json")
             ]
             for file_name in file_names:
                 self.upload_file(folder_path + "/" + file_name, bucket_name, file_name)
@@ -84,3 +88,6 @@ class S3Manager:
             print(e)
         else:
             return files
+
+    def get_file_url(self, bucket_name, file_name):
+        return f"https://{bucket_name}.s3.{self.region}.amazonaws.com/{file_name}"
