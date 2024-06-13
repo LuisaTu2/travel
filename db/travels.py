@@ -1,28 +1,19 @@
-import boto3
-from mypy_boto3_dynamodb.client import DynamoDBClient
-from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource
-
-from constants import DYNAMODB, PARTITION_KEY, SORT_KEY, TRAVELS
+from constants import PARTITION_KEY, SORT_KEY, TRAVELS
+from db.ddb_manager import DynamoDBManager
 from models import (
+    Action,
     AttributeDefinition,
     AttributeType,
     BillingMode,
     CreateTableRequest,
     KeySchemaElement,
     KeyType,
+    UpdateItemRequest,
+    UpdatePhotoRequest,
 )
-from db.manager import DatabaseManager
-from models import Action, UpdateItemRequest, UpdatePhotoRequest
-
-DYNAMO_DB_CLIENT: DynamoDBClient = boto3.client(DYNAMODB)
-DYNAMO_DB: DynamoDBServiceResource = boto3.resource(DYNAMODB)
 
 
-class Travels(DatabaseManager):
-    def __init__(self) -> None:
-        self.client = DYNAMO_DB_CLIENT
-        self.db = DYNAMO_DB
-
+class Travels(DynamoDBManager):
     def build_create_table_request(
         self,
         attribute_definitions,

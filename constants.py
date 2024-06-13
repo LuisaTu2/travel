@@ -1,4 +1,6 @@
 TRAVELS = "travels"
+PHOTOS = "photos"
 DYNAMODB = "dynamodb"
+S3 = "s3"
 PARTITION_KEY = "pk"
 SORT_KEY = "sk"

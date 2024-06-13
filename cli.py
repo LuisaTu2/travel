@@ -1,21 +1,25 @@
-from flask import Flask
 import click
+from flask import Flask
+
 from constants import TRAVELS
 from models import Action, Photo, UpdatePhotoRequest
 
 
-def register_cli(app: Flask, db):
+def register_cli(app: Flask, db, s3):
+    # DYNAMODB
+
     # flask create-travels-table
     @app.cli.command("create-travels-table")
     def create_travels_table():
         db.create_travels_table()
-        click.echo(f"[cli-add-travels-table] created travels table")
+        click.echo("[cli-add-travels-table] created travels table")
 
-    # flask delete-travels-table
-    @app.cli.command("delete-travels-table")
-    def delete_travels_table():
-        db.delete_table(TRAVELS)
-        click.echo(f"[cli-delete-travels-table] deleted travels table")
+    # flask delete-table
+    @app.cli.command("delete-table")
+    @click.argument("table")
+    def delete_table(table):
+        db.delete_table(table)
+        click.echo(f"[cli-delete-table] deleted {table} table")
 
     # flask add-photo "photos" "beograd:9000" --title "la rosa" --description "this is a flower"
     @app.cli.command("add-photo")
@@ -64,3 +68,18 @@ def register_cli(app: Flask, db):
         req = db.build_update_item_request(data)
         db.update_item(TRAVELS, req)
         click.echo(f"[cli-update-photo] updated photo {req} \n")
+
+    # S3
+    # flask create-bucket
+    @app.cli.command("create-bucket")
+    @click.argument("bucket_name")
+    def create_photos_bucket(bucket_name):
+        s3.create_bucket(bucket_name)
+        click.echo(f"[cli-create-photos-bucket] created {bucket_name} bucket")
+
+    # flask delete-bucket
+    @app.cli.command("delete-bucket")
+    @click.argument("bucket_name")
+    def delete_bucket(bucket_name):
+        s3.delete_bucket(bucket_name)
+        click.echo(f"[cli-delete-bucket] deleted {bucket_name} bucket")
