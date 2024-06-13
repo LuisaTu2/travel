@@ -1,12 +1,10 @@
 from flask import Flask, request
 
 from constants import TRAVELS
-from db.helpers import build_update_item_request
 from models import Photo
 
 
 def register_routes(app: Flask, db):
-
     @app.route("/")
     def travel():
         s = "travel the world little bug"
@@ -27,13 +25,12 @@ def register_routes(app: Flask, db):
         return f"[r-delete_photo] deleted photo pk:{photo.pk}, sk: {photo.sk}"
 
     # TODO: find a way for mačka!
-    # TODO: find a way for deleting a comment
     # curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photos", "sk": "beograd:6677"},  "action": "INCREMENT_REACTION", "reaction": "doggo" }'  http://localhost:5000/update-photo
     # curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photos", "sk": "beograd:6677"}, "action": "ADD_COMMENT", "comment": "cliclicli"}'  http://localhost:5000/update-photo
     # curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photos", "sk": "beograd:6677"}, "action": "DELETE_COMMENT", "position": 0}'  http://localhost:5000/update-photo
     @app.route("/update-photo", methods=["POST"])
     def update_photo():
         data = request.get_json()
-        req = build_update_item_request(data)
+        req = db.build_update_item_request(data)
         db.update_item(TRAVELS, req)
         return f"[r-update-photo] updated photo {req} \n"
