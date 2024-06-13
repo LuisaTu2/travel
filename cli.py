@@ -77,9 +77,25 @@ def register_cli(app: Flask, db, s3):
         s3.create_bucket(bucket_name)
         click.echo(f"[cli-create-photos-bucket] created {bucket_name} bucket")
 
+    # flask empty-bucket
+    @app.cli.command("empty-bucket")
+    @click.argument("bucket_name")
+    def empty_bucket(bucket_name):
+        s3.empty_bucket(bucket_name)
+        click.echo(f"[cli-empty-bucket] emptied {bucket_name} bucket")
+
     # flask delete-bucket
     @app.cli.command("delete-bucket")
     @click.argument("bucket_name")
     def delete_bucket(bucket_name):
         s3.delete_bucket(bucket_name)
         click.echo(f"[cli-delete-bucket] deleted {bucket_name} bucket")
+
+    # flask upload-image "images/blow.jpg" "travels-photos-00" "beograd:1000:blow.jpg"
+    @app.cli.command("upload-image")
+    @click.argument("file_name")
+    @click.argument("bucket_name")
+    @click.argument("object_name")
+    def upload_file(file_name, bucket_name, object_name):
+        s3.upload_file(file_name, bucket_name, object_name)
+        click.echo(f"[cli-upload-image] upladed image to {bucket_name} bucket")

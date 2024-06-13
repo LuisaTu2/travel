@@ -102,3 +102,11 @@ class UpdatePhotoRequest(BaseModel):
     reaction: Optional[ReactionType] = None
     comment: Optional[str] = None
     position: Optional[int] = None
+
+
+# S3
+class ACL(str, Enum):
+    PRIVATE = "private"
+    PUBLIC_READ = "public-read"
+    PUBLIC_READ_WRITE = "public-read-write"
+    AUTHENTICATED_READ = "authenticated-read"
