@@ -1,7 +1,11 @@
+from os import listdir
+from os.path import isfile, join
+
 import boto3
 from botocore.exceptions import ClientError
 
 from constants import S3
+from db.bucket_policy import get_bucket_policy
 
 
 class S3Manager:
@@ -17,8 +21,6 @@ class S3Manager:
                     "LocationConstraint": "us-east-2",
                 },
             )
-            # TODO: try to figure this one out
-            # self.client.put_bucket_acl(ACL=ACL.PUBLIC_READ, Bucket=bucket_name)
         except ClientError as e:
             print(e)
 
@@ -29,6 +31,13 @@ class S3Manager:
             print(e)
         else:
             return bucket
+
+    def add_bucket_policy(self, bucket_name):
+        try:
+            bucket_policy = get_bucket_policy(bucket_name)
+            self.client.put_bucket_policy(Bucket=bucket_name, Policy=bucket_policy)
+        except ClientError as e:
+            print(e)
 
     def empty_bucket(self, bucket_name: str):
         try:
@@ -44,39 +53,34 @@ class S3Manager:
         except ClientError as e:
             print(e)
 
-        # Add policy
-        """
-        import json
-
-    # Create a bucket policy
-    bucket_name = 'BUCKET_NAME'
-    bucket_policy = {
-        'Version': '2012-10-17',
-        'Statement': [{
-            'Sid': 'AddPerm',
-            'Effect': 'Allow',
-            'Principal': '*',
-            'Action': ['s3:GetObject'],
-            'Resource': f'arn:aws:s3:::{bucket_name}/*'
-        }]
-    }
-
-    # Convert the policy from JSON dict to string
-    bucket_policy = json.dumps(bucket_policy)
-
-    # Set the new policy
-    s3 = boto3.client('s3')
-    s3.put_bucket_policy(Bucket=bucket_name, Policy=bucket_policy)
-    """
-
-    # TODO: fix the content type
-    def upload_file(self, file_name: str, bucket_name: str, object_name: str):
+    def upload_file(self, file_path: str, bucket_name: str, object_name: str):
         try:
             self.client.upload_file(
-                file_name,
+                file_path,
                 bucket_name,
                 object_name,
-                ExtraArgs={"ContentType": "image/png"},
             )
         except ClientError as e:
             print(e)
+
+    def upload_files(self, folder_path: str, bucket_name: str):
+        try:
+            file_names = [
+                file
+                for file in listdir(f"{folder_path}")
+                if isfile(join(f"{folder_path}", file))
+            ]
+            for file_name in file_names:
+                self.upload_file(folder_path + "/" + file_name, bucket_name, file_name)
+        except ClientError as e:
+            print(e)
+
+    def list_files(self, bucket_name: str):
+        try:
+            bucket = self.get_bucket(bucket_name)
+            collection = bucket.objects.all()
+            files = [file.key for file in collection]
+        except ClientError as e:
+            print(e)
+        else:
+            return files

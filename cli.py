@@ -77,6 +77,13 @@ def register_cli(app: Flask, db, s3):
         s3.create_bucket(bucket_name)
         click.echo(f"[cli-create-photos-bucket] created {bucket_name} bucket")
 
+    # flask add-bucket-policy
+    @app.cli.command("add-bucket-policy")
+    @click.argument("bucket_name")
+    def add_bucket_policy(bucket_name):
+        s3.add_bucket_policy(bucket_name)
+        click.echo(f"[cli-empty-bucket] added policy to {bucket_name} bucket")
+
     # flask empty-bucket
     @app.cli.command("empty-bucket")
     @click.argument("bucket_name")
@@ -91,11 +98,27 @@ def register_cli(app: Flask, db, s3):
         s3.delete_bucket(bucket_name)
         click.echo(f"[cli-delete-bucket] deleted {bucket_name} bucket")
 
-    # flask upload-image "images/blow.jpg" "travels-photos-00" "beograd:1000:blow.jpg"
-    @app.cli.command("upload-image")
+    # flask upload-file "images/blow.jpg" "travels-photos-00" "beograd:1000:blow.jpg"
+    @app.cli.command("upload-file")
     @click.argument("file_name")
     @click.argument("bucket_name")
     @click.argument("object_name")
     def upload_file(file_name, bucket_name, object_name):
         s3.upload_file(file_name, bucket_name, object_name)
-        click.echo(f"[cli-upload-image] upladed image to {bucket_name} bucket")
+        click.echo(f"[cli-upload-file] upladed file to {bucket_name} bucket")
+
+    # flask upload-files "images" "travels-photos-00"
+    @app.cli.command("upload-files")
+    @click.argument("folder_name")
+    @click.argument("bucket_name")
+    def upload_files(folder_name, bucket_name):
+        s3.upload_files(folder_name, bucket_name)
+        click.echo(f"[cli-upload-files] upladed files to {bucket_name} bucket")
+
+    # flask list-files "travels-photos-00"
+    @app.cli.command("list-files")
+    @click.argument("bucket_name")
+    def list_files(bucket_name):
+        files = s3.list_files(bucket_name)
+        print(files)
+        click.echo(f"[cli-list-files] files in {bucket_name} bucket")

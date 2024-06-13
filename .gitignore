@@ -1,3 +1,5 @@
 .env
 resources.txt
 __pycache__/
+bucket_policy.py
+images/
