@@ -4,8 +4,8 @@ from typing import List, Optional
 from pydantic import BaseModel
 from typing_extensions import TypedDict
 
-
 # DynamoDB models
+
 
 class KeyType(str, Enum):
     HASH = "HASH"
@@ -55,6 +55,7 @@ class Key(TypedDict):
 class UpdateItemRequest(BaseModel):
     key: Key
     update_expression: str
+    expression_attribute_names: Optional[dict] = None
     expression_attribute_values: Optional[dict] = None
 
 
@@ -69,14 +70,17 @@ class TableStatus(str, Enum):
 
 
 # travels table models
+class Reactions(TypedDict):
+    like: int = 0
+    doggo: int = 0
+    macka: int = 0
+
 
 class Photo(Item):
     title: str = ""
     description: str = ""
     link: str = ""
-    likes: int = 0
-    doggo: int = 0
-    macka: int = 0
+    reactions: Reactions = Reactions(like=0, doggo=0, macka=0)
     comments: List[str] = []
 
 
@@ -86,15 +90,15 @@ class Action(str, Enum):
     DELETE_COMMENT = "DELETE_COMMENT"
 
 
-class Reaction(str, Enum):
-    LIKE = "like"
-    DOGGO = "doggo"
-    MACKA = "macka"
+class ReactionType(str, Enum):
+    like = "like"
+    doggo = "doggo"
+    macka = "macka"
 
 
 class UpdatePhotoRequest(BaseModel):
     key: Key
     action: Action
-    reaction: Optional[Reaction] = None
+    reaction: Optional[ReactionType] = None
     comment: Optional[str] = None
     position: Optional[int] = None

@@ -86,7 +86,20 @@ class DatabaseManager:
     def update_item(self, table_name: str, request: UpdateItemRequest):
         try:
             table = self.get_table(table_name)
-            if request.expression_attribute_values:
+            if (
+                request.expression_attribute_values
+                and request.expression_attribute_names
+            ):
+                table.update_item(
+                    Key=request.key,
+                    UpdateExpression=request.update_expression,
+                    ExpressionAttributeNames=request.expression_attribute_names,
+                    ExpressionAttributeValues=request.expression_attribute_values,
+                )
+            elif (
+                request.expression_attribute_values
+                and not request.expression_attribute_names
+            ):
                 table.update_item(
                     Key=request.key,
                     UpdateExpression=request.update_expression,
