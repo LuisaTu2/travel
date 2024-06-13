@@ -3,8 +3,14 @@ from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
 from flask import Flask
 
-from constants import (PARTITION_KEY, PARTITION_KEY_VALUE, PHOTOS,
-                       PHOTOS_DATA_PATH, SORT_KEY, TRAVELS)
+from constants import (
+    PARTITION_KEY,
+    PARTITION_KEY_VALUE,
+    PHOTOS,
+    PHOTOS_DATA_PATH,
+    SORT_KEY,
+    TRAVELS,
+)
 from models import Action, Photo, UpdatePhotoRequest
 
 
@@ -27,6 +33,18 @@ def register_cli(app: Flask, db, s3):
         db.delete_table(table)
         click.echo(f"[cli-delete-table] deleted {table} table")
 
+    # flask delete-item
+    @app.cli.command("delete-item")
+    @click.argument("table_name")
+    @click.argument("pk")
+    @click.argument("sk")
+    def delete_item(table_name, pk, sk):
+        photo = Photo(pk=pk, sk=sk)
+        db.delete_item(table_name, item=photo)
+        click.echo(
+            f"[cli-delete_item] deleted item pk:{photo.pk}, sk: {photo.sk} from table {table_name}"
+        )
+
     # -------------------------------#
     #                S3              #
     # -------------------------------#
@@ -45,6 +63,14 @@ def register_cli(app: Flask, db, s3):
         s3.add_bucket_policy(bucket_name)
         click.echo(f"[cli-empty-bucket] added policy to {bucket_name} bucket")
 
+    # flask list-files "travels-photos-00"
+    @app.cli.command("list-files")
+    @click.argument("bucket_name")
+    def list_files(bucket_name):
+        files = s3.list_files(bucket_name)
+        print(files)
+        click.echo(f"[cli-list-files] files in {bucket_name} bucket")
+
     # flask empty-bucket
     @app.cli.command("empty-bucket")
     @click.argument("bucket_name")
@@ -59,13 +85,15 @@ def register_cli(app: Flask, db, s3):
         s3.delete_bucket(bucket_name)
         click.echo(f"[cli-delete-bucket] deleted {bucket_name} bucket")
 
-    # flask list-files "travels-photos-00"
-    @app.cli.command("list-files")
+    # flask delete-file
+    @app.cli.command("delete-file")
     @click.argument("bucket_name")
-    def list_files(bucket_name):
-        files = s3.list_files(bucket_name)
-        print(files)
-        click.echo(f"[cli-list-files] files in {bucket_name} bucket")
+    @click.argument("file_name")
+    def delete_file(bucket_name, file_name):
+        s3.delete_file(bucket_name, file_name)
+        click.echo(
+            f"[cli-delete-file] deleted file {file_name} from {bucket_name} bucket"
+        )
 
     # -------------------------------#
     #               APP              #
@@ -87,8 +115,8 @@ def register_cli(app: Flask, db, s3):
                 for file in listdir(f"{folder_path}")
                 if isfile(join(f"{folder_path}", file)) and not file.endswith(".json")
             ]
-            with open(PHOTOS_DATA_PATH) as j:
-                photos_data = json.load(j)
+            with open(PHOTOS_DATA_PATH) as f:
+                photos_data = json.load(f)
 
             for file_name in file_names:
                 name = file_name.split(".")[0]
@@ -96,8 +124,7 @@ def register_cli(app: Flask, db, s3):
                 s3.upload_file(folder_path + "/" + file_name, bucket_name, name)
 
                 # then store photo item in dynamodb
-                sk = name.split(":")[0] + ":" + name.split(":")[1]
-                # title = name.split(":")[2]
+                sk = name
                 title = photos_data[name]["title"]
                 description = photos_data[name]["description"]
                 url = s3.get_file_url(bucket_name, name)
@@ -121,9 +148,9 @@ def register_cli(app: Flask, db, s3):
                 f"[cli-upload-photos] uploaded files to s3 {bucket_name} bucket and ddb {table_name} table\n"
             )
 
-    # flask update-photo "photos" "beograd:8000" --action='INCREMENT_REACTION' --reaction='like'
-    # flask update-photo "photos" "beograd:9000" --action='ADD_COMMENT' --comment='ddddd from cli'
-    # flask update-photo "photos" "beograd:9000" --action='DELETE_COMMENT' --position=0
+    # flask update-photo "photo" "beograd:4000" --action='INCREMENT_REACTION' --reaction='like'
+    # flask update-photo "photo" "beograd:4000" --action='ADD_COMMENT' --comment='ddddd from cli'
+    # flask update-photo "photo" "beograd:4000" --action='DELETE_COMMENT' --position=0
     @app.cli.command("update-photo")
     @click.argument("pk")
     @click.argument("sk")
@@ -187,54 +214,3 @@ def register_cli(app: Flask, db, s3):
             print(e)
         else:
             click.echo(f"[cli-delete-photos] deleted photos \n")
-
-    # -------------------------------#
-    #            UNIT OPS            #
-    # -------------------------------#
-    # use UPLOAD-PHOTO cli method instead will add photo to both s3 and ddb
-    # flask add-photo "photos" "beograd:9000" --title "la rosa" --description "this is a flower"
-    @app.cli.command("add-photo")
-    @click.argument("pk")
-    @click.argument("sk")
-    @click.option("--title")
-    @click.option("--description")
-    def add_photo(pk, sk, title, description):
-        photo = Photo(pk=pk, sk=sk, title=title, description=description)
-        db.put_item(TRAVELS, item=photo)
-        click.echo(f"[cli-add-photo] created new photo pk:{photo.pk}, sk: {photo.sk}")
-
-    # flask delete-photo "photos" "beograd:9000"
-    @app.cli.command("delete-photo")
-    @click.argument("pk")
-    @click.argument("sk")
-    def delete_photo(pk, sk):
-        photo = Photo(pk=pk, sk=sk)
-        db.delete_item(TRAVELS, item=photo)
-        click.echo(f"[cli-delete_photo] deleted photo pk:{photo.pk}, sk: {photo.sk}")
-
-    # flask upload-file "images/blow.jpg" "travels-photos-00" "beograd:1000:blow.jpg"
-    @app.cli.command("upload-file")
-    @click.argument("file_name")
-    @click.argument("bucket_name")
-    @click.argument("object_name")
-    def upload_file(file_name, bucket_name, object_name):
-        s3.upload_file(file_name, bucket_name, object_name)
-        click.echo(f"[cli-upload-file] upladed file to {bucket_name} bucket")
-
-    # flask upload-files "images" "travels-photos-00"
-    @app.cli.command("upload-files")
-    @click.argument("folder_name")
-    @click.argument("bucket_name")
-    def upload_files(folder_name, bucket_name):
-        s3.upload_files(folder_name, bucket_name)
-        click.echo(f"[cli-upload-files] upladed files to {bucket_name} bucket")
-
-    # flask delete-file "beograd:4000:rose-detail.png" "travels-photos-00"
-    @app.cli.command("delete-file")
-    @click.argument("bucket_name")
-    @click.argument("file_name")
-    def delete_file(bucket_name, file_name):
-        s3.delete_file(bucket_name, file_name)
-        click.echo(
-            f"[cli-delete-file] deleted file {file_name} from {bucket_name} bucket"
-        )

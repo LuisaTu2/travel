@@ -2,9 +2,17 @@ from botocore.exceptions import ClientError
 
 from constants import PARTITION_KEY, SORT_KEY, TRAVELS
 from db.dynamodb import DynamoDBManager
-from models import (Action, AttributeDefinition, AttributeType, BillingMode,
-                    CreateTableRequest, KeySchemaElement, KeyType,
-                    UpdateItemRequest, UpdatePhotoRequest)
+from models import (
+    Action,
+    AttributeDefinition,
+    AttributeType,
+    BillingMode,
+    CreateTableRequest,
+    KeySchemaElement,
+    KeyType,
+    UpdateItemRequest,
+    UpdatePhotoRequest,
+)
 
 
 class Travels(DynamoDBManager):
