@@ -1,54 +1,32 @@
 from botocore.exceptions import ClientError
 
 from constants import PARTITION_KEY, SORT_KEY, TRAVELS
-from db.ddb_manager import DynamoDBManager
-from models import (
-    Action,
-    AttributeDefinition,
-    AttributeType,
-    BillingMode,
-    CreateTableRequest,
-    KeySchemaElement,
-    KeyType,
-    UpdateItemRequest,
-    UpdatePhotoRequest,
-)
+from db.dynamodb import DynamoDBManager
+from models import (Action, AttributeDefinition, AttributeType, BillingMode,
+                    CreateTableRequest, KeySchemaElement, KeyType,
+                    UpdateItemRequest, UpdatePhotoRequest)
 
 
 class Travels(DynamoDBManager):
-    def build_create_table_request(
-        self,
-        attribute_definitions,
-        table_name: str,
-        key_schema_elements,
-        billing_mode: str,
-    ):
-        attribute_definitions = [
-            AttributeDefinition(AttributeName=attribute[0], AttributeType=attribute[1])
-            for attribute in attribute_definitions
-        ]
-        key_schema_elements = [
-            KeySchemaElement(AttributeName=element[0], KeyType=element[1])
-            for element in key_schema_elements
-        ]
-        return CreateTableRequest(
-            attribute_definitions=attribute_definitions,
-            table_name=table_name,
-            key_schema=key_schema_elements,
-            billing_mode=billing_mode,
-        )
-
     def create_travels_table(self):
         try:
-            request = self.build_create_table_request(
+            request = CreateTableRequest(
                 attribute_definitions=[
-                    (PARTITION_KEY, AttributeType.S),
-                    (SORT_KEY, AttributeType.S),
+                    AttributeDefinition(
+                        AttributeName=PARTITION_KEY, AttributeType=AttributeType.S
+                    ),
+                    AttributeDefinition(
+                        AttributeName=SORT_KEY, AttributeType=AttributeType.S
+                    ),
                 ],
                 table_name=TRAVELS,
-                key_schema_elements=[
-                    (PARTITION_KEY, KeyType.HASH.value),
-                    (SORT_KEY, KeyType.RANGE.value),
+                key_schema=[
+                    KeySchemaElement(
+                        AttributeName=PARTITION_KEY, KeyType=KeyType.HASH.value
+                    ),
+                    KeySchemaElement(
+                        AttributeName=SORT_KEY, KeyType=KeyType.RANGE.value
+                    ),
                 ],
                 billing_mode=BillingMode.PAY_PER_REQUEST,
             )

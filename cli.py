@@ -1,18 +1,11 @@
 import click
+from boto3.dynamodb.conditions import Key
+from botocore.exceptions import ClientError
 from flask import Flask
 
-from constants import (
-    PARTITION_KEY,
-    PARTITION_KEY_VALUE,
-    SORT_KEY,
-    TRAVELS,
-    PHOTOS_META_PATH,
-    PHOTOS_BUCKET,
-)
+from constants import (PARTITION_KEY, PARTITION_KEY_VALUE, PHOTOS,
+                       PHOTOS_DATA_PATH, SORT_KEY, TRAVELS)
 from models import Action, Photo, UpdatePhotoRequest
-
-from botocore.exceptions import ClientError
-from boto3.dynamodb.conditions import Key
 
 
 def register_cli(app: Flask, db, s3):
@@ -94,7 +87,7 @@ def register_cli(app: Flask, db, s3):
                 for file in listdir(f"{folder_path}")
                 if isfile(join(f"{folder_path}", file)) and not file.endswith(".json")
             ]
-            with open(PHOTOS_META_PATH) as j:
+            with open(PHOTOS_DATA_PATH) as j:
                 photos_data = json.load(j)
 
             for file_name in file_names:
@@ -167,7 +160,7 @@ def register_cli(app: Flask, db, s3):
             # delete from ddb
             db.delete_item(TRAVELS, item=photo)
             # delete from bucket
-            s3.delete_file(PHOTOS_BUCKET, f"{sk}")
+            s3.delete_file(PHOTOS, f"{sk}")
 
         except ClientError as e:
             print(e)
@@ -189,7 +182,7 @@ def register_cli(app: Flask, db, s3):
             for photo in photos:
                 print(photo["sk"], photo["pk"])
                 db.delete_item(TRAVELS, item=Photo(pk=photo["pk"], sk=photo["sk"]))
-                s3.delete_file(PHOTOS_BUCKET, photo["sk"])
+                s3.delete_file(PHOTOS, photo["sk"])
         except ClientError as e:
             print(e)
         else:

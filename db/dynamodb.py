@@ -1,9 +1,9 @@
 import boto3
+from botocore.exceptions import ClientError
 from mypy_boto3_dynamodb.client import DynamoDBClient
 from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource, Table
-from botocore.exceptions import ClientError
 
-from constants import DYNAMODB, PARTITION_KEY, SORT_KEY
+from constants import DYNAMODB
 from models import CreateTableRequest, Item, Photo, UpdateItemRequest
 
 
