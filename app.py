@@ -1,11 +1,13 @@
-from flask import Flask
+from flask import Flask, jsonify
+from flask_cors import CORS
 
-from cli import register_cli
+from commands import register_cli
 from db.photos import Photos
 from db.travels import Travels
 from routes import register_routes
 
 app = Flask(__name__)
+cors = CORS(app, origins="*")
 
 db = Travels()
 photos = Photos()

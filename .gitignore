@@ -3,3 +3,4 @@ resources.txt
 __pycache__/
 bucket_policy.py
 images/
+frontend/node_modules

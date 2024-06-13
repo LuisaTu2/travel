@@ -4,11 +4,13 @@ from constants import TRAVELS
 
 
 def register_routes(app: Flask, db):
-    @app.route("/")
+    @app.route("/travel")
     def travel():
-        s = "travel the world little bug"
-        return f"<div><p>{s}</p><img src='https://travels-photos-00.s3.us-east-2.amazonaws.com/beograd:1000'></div>"
-
+        s = "travel the world my little bug"
+        image = 'https://travels-photos-00.s3.us-east-2.amazonaws.com/beograd:1000'
+        # return f"<div><p>{s}</p><img src='https://travels-photos-00.s3.us-east-2.amazonaws.com/beograd:1000'></div>"
+        return [s, image]
+    
     # TODO: find a way for mačka!
     # curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photos", "sk": "beograd:6677"},  "action": "INCREMENT_REACTION", "reaction": "doggo" }'  http://localhost:5000/update-photo
     # curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photos", "sk": "beograd:6677"}, "action": "ADD_COMMENT", "comment": "cliclicli"}'  http://localhost:5000/update-photo
