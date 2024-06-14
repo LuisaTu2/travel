@@ -207,7 +207,6 @@ def register_cli(app: Flask, db, s3):
                 & Key(SORT_KEY).begins_with(sk_pattern),
             )["Items"]
             for photo in photos:
-                print(photo["sk"], photo["pk"])
                 db.delete_item(TRAVELS, item=Photo(pk=photo["pk"], sk=photo["sk"]))
                 s3.delete_file(PHOTOS, photo["sk"])
         except ClientError as e:
