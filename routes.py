@@ -4,6 +4,7 @@ from constants import PARTITION_KEY, SORT_KEY, TRAVELS, PARTITION_KEY_VALUE
 
 from constants import TRAVELS
 import json
+from models import Photo, Reactions
 
 
 def register_routes(app: Flask, db):
@@ -19,18 +20,38 @@ def register_routes(app: Flask, db):
         try:
             pattern = request.args.get("pattern")
             table = db.get_table(TRAVELS)
-            photos = table.query(
-                ProjectionExpression="pk, sk, title, description, link, comments",
+            items = table.query(
+                ProjectionExpression="pk, sk, title, description, link, comments, reactions",
                 KeyConditionExpression=Key(PARTITION_KEY).eq(PARTITION_KEY_VALUE)
                 & Key(SORT_KEY).begins_with(pattern),
             )["Items"]
+            photos = [
+                dict(
+                    Photo(
+                        pk=item["pk"],
+                        sk=item["sk"],
+                        reactions=dict(
+                            Reactions(
+                                doggo=item["reactions"]["doggo"],
+                                like=item["reactions"]["like"],
+                                macka=item["reactions"]["macka"],
+                            )
+                        ),
+                        title=item["title"],
+                        description=item["description"],
+                        link=item["link"],
+                        comments=item["comments"],
+                    )
+                )
+                for item in items
+            ]
+
             res = json.dumps({"photos": photos})
         except Exception as e:
             raise Exception(f"[get_photos] could not retrieve photos \n {e}")
         else:
             return res
         
-
     # TODO: find a way for mačka!
     # curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photo", "sk": "beograd:4000"}, "action": "INCREMENT_REACTION", "reaction": "doggo" }'  http://localhost:5000/update-photo
     # curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photo", "sk": "beograd:4000"}, "action": "ADD_COMMENT", "comment": "cliclicli"}'  http://localhost:5000/update-photo

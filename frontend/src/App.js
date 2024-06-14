@@ -8,7 +8,6 @@ import Photo from "./Photo.js";
 function App() {
   const [photos, setPhotos] = useState([]);
 
-
   const getPhotos = async () => {
     const response = await axios.get("http://localhost:5000/get-photos", {
       params: { pattern: "beograd" },
