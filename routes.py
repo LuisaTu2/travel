@@ -8,11 +8,11 @@ from models import Photo, Reactions
 
 
 def register_routes(app: Flask, db):
-    @app.route("/travel")
+    @app.route("/")
     def travel():
         s = "travel the world my little bug"
         image = "https://travels-photos-00.s3.us-east-2.amazonaws.com/beograd:1000"
-        return [s, image]
+        return f"<html><div>hello moj beograd! {s} </div><img src='{image}'/></html>"
 
     # curl -G -d  "pattern=beograd" http://localhost:5000/get-photos
     @app.route("/get-photos", methods=["GET"])

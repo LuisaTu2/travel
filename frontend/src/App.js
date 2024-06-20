@@ -1,18 +1,18 @@
 import "./App.css";
 
 import { useState, useEffect } from "react";
-import axios from "axios";
 
 import Photo from "./Photo.js";
+import { GET_PHOTOS_BEOGRAD } from "./constants.js";
 
 function App() {
   const [photos, setPhotos] = useState([]);
 
   const getPhotos = async () => {
-    const response = await axios.get("http://localhost:5000/get-photos", {
-      params: { pattern: "beograd" },
-    });
-    const photos = response.data.photos;
+    const response = await fetch(GET_PHOTOS_BEOGRAD);
+
+    const data = await response.json();
+    const photos = data.photos;
     setPhotos(photos);
   };
 
