@@ -1,7 +1,5 @@
 import boto3
 from botocore.exceptions import ClientError
-from mypy_boto3_dynamodb.client import DynamoDBClient
-from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource, Table
 
 from constants import DYNAMODB
 from models import CreateTableRequest, Item, Photo, UpdateItemRequest
@@ -9,8 +7,8 @@ from models import CreateTableRequest, Item, Photo, UpdateItemRequest
 
 class DynamoDBManager:
     def __init__(self) -> None:
-        self.client: DynamoDBClient = boto3.client(DYNAMODB)
-        self.db: DynamoDBServiceResource = boto3.resource(DYNAMODB)
+        self.client = boto3.client(DYNAMODB, region_name="us-east-2")
+        self.db = boto3.resource(DYNAMODB, region_name="us-east-2")
 
     def exceptions(self):
         return self.client.exceptions
@@ -35,7 +33,7 @@ class DynamoDBManager:
 
     def get_table(self, table_name: str):
         try:
-            table: Table = self.db.Table(table_name)
+            table = self.db.Table(table_name)
         except Exception as e:
             raise Exception(f"[get_table] unable to get table {table_name} \n {e}")
         else:
