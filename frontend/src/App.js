@@ -7,10 +7,10 @@ import { GET_PHOTOS_BEOGRAD } from "./constants.js";
 
 function App() {
   const [photos, setPhotos] = useState([]);
+  const [phrase, setPhrase] = useState();
 
   const getPhotos = async () => {
-    const response = await fetch(GET_PHOTOS_BEOGRAD);
-
+    const response = await fetch(GET_PHOTOS_BEOGRAD); 
     const data = await response.json();
     const photos = data.photos;
     setPhotos(photos);
@@ -27,6 +27,7 @@ function App() {
           {photos.map((photo) => {
             return <Photo data={photo} key={photo.title} />;
           })}
+          <div> with love {phrase} </div>
         </ul>
       </header>
     </div>
