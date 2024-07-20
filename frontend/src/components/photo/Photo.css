@@ -1,0 +1,57 @@
+.photo {
+    margin:0px 0px 70px 0px;
+    padding:0px;
+}
+
+img {
+    max-width: 100%;
+    border-radius: 3px;
+}
+
+.photoMeta {
+    margin:0px;
+    padding:0px;
+}
+
+.photoTitle {
+    font-size: 18px;
+    font-weight: 700;
+    margin:3px 0px 0px 0px;
+    padding:0px;
+}
+
+.photoDesc{
+    font-size: 16px;
+    margin:0px;
+    padding:0px;
+}
+
+.photoReactions {
+    margin: 5px 0px 16px 0px;
+    padding:0px;
+}
+
+@media (min-width: 769px) {
+    img {
+        max-width: 350px;
+    }
+
+    .photo {
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 100px;
+    }
+
+    .photoMeta {
+        display: flex;
+        flex-direction: column;
+        padding-left: 20px;
+        justify-content: flex-end;
+    }
+
+    .photoReactions {
+        margin: 0px;
+        padding:0px;
+    }
+
+}
