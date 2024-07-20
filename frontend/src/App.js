@@ -21,12 +21,15 @@ function App() {
 
   return (
     <div className="app">
-      <h1 className="title">travels to beograd</h1>
+      <h1 className="title">beograd</h1>
       {photos.map((photo) => {
         return <Photo data={photo} key={photo.title} />;
       })}
-      <div>Curious about the implementation details? </div> Check out the <strong><a href={ARCHITECTURE_PATH} style={{color: "white", textDecoration: "none"}}> architecture</a></strong> page.
-      <footer>made with &#129293; in &#127809; </footer>
+      <footer>
+        <div>Curious about the implementation details? 
+        Check out the <strong><a href={ARCHITECTURE_PATH} className="linkArchitecture"> architecture</a></strong> page!</div> 
+        <p className="made"> made with <span>&#129293; </span> in <span>&#127809; </span></p>
+      </footer>
     </div>
   );
 }

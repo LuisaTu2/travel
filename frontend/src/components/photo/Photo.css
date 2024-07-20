@@ -1,6 +1,7 @@
 .photo {
     margin:0px 0px 70px 0px;
     padding:0px;
+    color: rgb(73, 69, 69);
 }
 
 img {
@@ -14,14 +15,14 @@ img {
 }
 
 .photoTitle {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 700;
     margin:3px 0px 0px 0px;
     padding:0px;
 }
 
 .photoDesc{
-    font-size: 16px;
+    font-size: 12.5px;
     margin:0px;
     padding:0px;
 }
@@ -29,6 +30,7 @@ img {
 .photoReactions {
     margin: 5px 0px 16px 0px;
     padding:0px;
+    font-size: 15px; /*have different fonts for emojis and numbers*/
 }
 
 @media (min-width: 769px) {
@@ -45,13 +47,17 @@ img {
     .photoMeta {
         display: flex;
         flex-direction: column;
-        padding-left: 20px;
+        margin-left: 20px;
+        margin-bottom: 20px;
         justify-content: flex-end;
     }
 
+    .photoDesc {
+        margin-top: 5px;
+    }
+
     .photoReactions {
-        margin: 0px;
-        padding:0px;
+        margin: 10px 0px 0px 0px;
     }
 
 }
