@@ -4,61 +4,72 @@
         <link rel="stylesheet" type="text/css" rel="noopener" target="_blank" href="style.css">
     </head>
 <body>
+    <div id="container">
+        <h1>Architecture</h1>
+        <p class="text">
+            The diagram below shows the design of the <a href="http://18.216.159.247" id="travels"> travels</a> </li> project. 
+            The system is fully hosted on aws. 
+            The ec2 instance handles requests from the client via the nginx and gunicorn servers while data and objects are stored in dynamoDB and s3. 
+            In this case, nginx is used both as a web server to render static files as well as a proxy to forward api requests to the backend.
+            <br/>   
+            <img src="architecture_1.jpg" id="img_architecture"/>
+            <br/>
 
-    <h1>Architecture</h1>
-    <p class="text">
-        The diagram below shows the architecture that I used to implement the travel project.
-        <br/>
-        <img src="architecture.jpeg"/>
-        <br/>
+            As an example, when the client first lands on the main page the request goes through the following steps:
+            <ol>
+                <li> The client initiates a GET request by entering the IP address of the ec2 instance in the browser.</li>
+                <li> Nginx is the first component to receive and handle the request. Initially, it retuns the html of the landing page.</li>
+                <li> As the page loads, a request is sent to the backend to retrieve the pictures to be displayed on the landing page. This request is proxied by nginx to gunicorn.</li>
+                <li> Gunicorn receives the request to get the pictures and asks dynamoDB/s3 to retrieve them. </li>
+                <li> The landing page is finally populated with the pictures.</li>
+            </ol>
+        </p>
 
-        Below are the steps of a GET request that retrieves both the landing page and the pictures.
-        <ol>
-            <li> The client sends a request to the ec2 instance IP address.</li>
-            <li> Nginx receives the request and starts processing it.</li>
-            <li> Nginx first returns the html landing page. </li>
-            <li> As the page loads, a request to retrieve the pictures is proxied by Nginx to the backend (gunicorn).</li>
-            <li> Gunicorn receives the request to get the pictures and asks dynamoDB. </li>
-            <li> DynamoDb receives the request and returns the pictures.</li>
-            <li> The landing page is finally populated with the pictures.</li>
-        </ol>
-    </p>
+        <h1>Components</h1>
+        <p class="text">
+            <ul>
+                <li> programming languages and frameworks: python, flask, react, js, html</li>
+                <li> cloud: ec2, dynamoDB, s3 </li>
+                <li> web servers: nginx, gunicorn </li>
+                <li> protocols: http (rest) </li>
+                <li> repo: <a href="https://github.com/LuisaTu2/travel" id="github"> github</a> </li>
+                <li> project: <a href="http://18.216.159.247" id="travels"> travels</a> </li> </li>
+            </ul>
+        </p>
 
-    <h1>Components</h1>
-    <p class="text">
-        <ul>
-            <li> programming languages and frameworks: python, flask, react, js, html</li>
-            <li> cloud: ec2, dynamoDB, s3 </li>
-            <li> web servers: nginx, gunicorn </li>
-            <li> protocols: http (rest) </li>
-        </ul>
-    </p>
-    
-    <h1>Background</h1>
-    <p class="text">
-        I built the travel project out of a desire to learn more about <strong>non-relational databases</strong> and collect memories and pictures
-        from my recent trips to Belgrade in a fun and personable way. It turned into a <strong>full stack project</strong> where I learned a good deal about
-        dynamoDB and EC2, Nginx and Gunicorn. I also brielfy touched upon the concepts of proxy server and cors. 
-    </p>
+        <h1>Data Models</h1>
+        <p class="text">
+            Photo 
+            DynamoDB item [to be continued ...]
+        </p>
+        
+        <h1>Background</h1>
+        <p class="text">
+            I built the <a href="http://18.216.159.247" id="travels"> travels</a> </li> project out of a desire to learn more about <strong>non-relational databases</strong> and collect memories and pictures
+            from my recent trips in a fun and personable way. It turned into a <strong>full stack</strong> project where I learned a good deal about
+            dynamoDB, ec2, nginx and gunicorn. I also brielfy touched upon the concepts of proxy server and cors. 
+        </p>
 
-    <h1>Next</h1>
-    <p class="text">
-        To consider in future releases:
-        <ul>
-            <li> https vs http </li>
-            <li> replace ip address with domain </li>
-            <li> add firewall </li>
-            <li> unit testing </li>
-        </ul>
-    </p>
+        <h1>Next</h1>
+        <p class="text">
+            To consider in future releases:
+            <ul>
+                <li> https vs http </li>
+                <li> replace ip address with a domain </li>
+                <li> add firewall, api gateway </li>
+                <li> logging </li>
+                <li> unit tests &#128584; </li>
+            </ul>
+        </p>
 
-    <h1>Thank you</h1>
-    <p class="text">
-        I hope you enjoyed the travel project as much as I did when building and piecing together each component. 
-        I always welcome constructive feedback and if there is anything that stood out (or if you would simply like to say hi!) please send me a line at
-        <a href="mailto:luisa.pegoraro@gmail.com" id="email">luisa.pegoraro@gmail.com</a>. &#381;iveli!
-    </p>
-
+        <h1>Thank you</h1>
+        <p class="text">
+            I hope you enjoyed the <a href="http://18.216.159.247" id="travels"> travels</a> </li> project as much as I did when building and piecing together each component. 
+            I always welcome constructive feedback and if there is anything that stood out or, if you would simply like to say hi, send me a line at
+            <a href="mailto:luisa.pegoraro@gmail.com" id="email">luisa.pegoraro@gmail.com</a>. Until next time.
+            <p id="goodbye">  &#382;iveli! &#183;  enjoy!</p> 
+        </p>
+    </div>
 </body>
 </html>
 
