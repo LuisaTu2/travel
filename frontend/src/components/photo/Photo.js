@@ -1,24 +1,27 @@
 import "./Photo.css";
 
+import Reaction from "../reaction/Reaction.js";
+
+
 export default function Photo({ data }) {
+  const title = data.title;
+  const description = data.description;
+  const reactions = data.reactions;
+  const l = Object.keys(reactions).length;
   const item = (
     <div className="photo">
       <img src={data.link} />
       <div className="photoMeta">
-        <p className="photoTitle">{data.title}</p>
-        <p className="photoDesc">{data.description} </p>
-
-        <p className="photoReactions" onClick={event => { console.log("EVENT: ", event); event.target.style.color = "grey"}}>
-          &#x2764; 
-          {/* {data.reactions.like}{" "}  */}
-          &#183;  
-          &#128049; 
-          {/* {data.reactions.macka}{" "}  */}
-          &#183; 
-          &#128054;
-           {/* {data.reactions.doggo} */}
-          {/* &#127788; 0 */}
-        </p>
+        <p className="photoTitle">{title}</p>
+        {description ? <p className="photoDesc">{description} </p> : ""}
+        { l > 0 ? <p className="photoReactions"> 
+          {
+            Object.entries(reactions).map((reaction, index) => {
+              return <Reaction reaction={reaction} key={"r_" +title } isLast={index === (l - 1)} />;
+            })
+          }
+        </p> : ""
+}
       </div>
     </div>
   );

@@ -21,7 +21,7 @@ function App() {
 
   return (
     <div className="app">
-      <h1 className="title">beograd</h1>
+      <h1>beograd</h1>
       {photos.map((photo) => {
         return <Photo data={photo} key={photo.title} />;
       })}

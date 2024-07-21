@@ -31,7 +31,11 @@ img {
     margin: 5px 0px 16px 0px;
     padding:0px;
     font-size: 15px; /*have different fonts for emojis and numbers*/
+    display: flex;
+    flex-direction: row;
+    gap: 7px;
 }
+
 
 @media (min-width: 769px) {
     img {
@@ -56,7 +60,7 @@ img {
         margin-top: 5px;
     }
 
-    .photoReactions {
+    .reactions {
         margin: 10px 0px 0px 0px;
     }
 
