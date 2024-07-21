@@ -8,10 +8,38 @@ body {
   max-width: 90%;
 }
 
+.memories {
+  margin: 0px 0px 50px 0px;
+  padding: 0px;
+  max-width: 95%;
+}
+
+.memories h3 {
+  color: rgb(57, 53, 53);
+}
+
+.memories ul {
+  margin: 0px;
+  padding: 0px;
+}
+
+.memories li {
+  margin-left: 20px;
+  padding: 0px;
+  font-size: 12.5px;
+  color: rgb(57, 53, 53);
+  padding-bottom: 7px;
+}
+
+
 footer {
   margin: 0px 0px 30px 0px;
   color: rgb(117, 110, 110);
   font-size: 15px;
+}
+
+.curious{
+  font-size:  12.5px;
 }
 
 .linkArchitecture {
@@ -21,8 +49,8 @@ footer {
 
 .made {
   padding: 0px;
-  margin-top: 10px;
-  font-size: 12.5px;
+  margin-top: 5px;
+  font-size: 11px;
   font-style: italic;
 }
 
@@ -35,6 +63,13 @@ footer {
     max-width: 700px;
     margin-left: 25%;
   }
+
+  .memories {
+    margin: 0px 0px 50px 0px;
+    padding: 0px;
+    max-width: 500px;
+  }
+  
 }
 
 
@@ -42,5 +77,11 @@ footer {
   .app {
     max-width: 700px;
     margin-left: 30%;
+  }
+
+  .memories {
+    margin: 0px 0px 50px 0px;
+    padding: 0px;
+    max-width: 500px;
   }
 }
