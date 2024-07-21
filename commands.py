@@ -129,16 +129,23 @@ def register_cli(app: Flask, db, s3):
                 photo = data[name]
                 title = photo["title"]
                 description = photo["description"]
-                reactions = {}
-                if "reactions" in photo:
-                    reactions = photo["reactions"]
+
+                reactions = photo["reactions"]
+                reacts= {}
+                for reaction in reactions:
+                    react = {
+                        "likes": 0,
+                        "liked_by": {}
+                    }
+                    reacts[reaction] = react
+
                 url = s3.get_file_url(bucket_name, name)
                 photo = Photo(
                     pk=PARTITION_KEY_VALUE,
                     sk=sk,
                     title=title,
                     description=description,
-                    reactions=dict(reactions),
+                    reactions=reacts,
                     link=url,
                 )
                 db.put_item(table_name, photo)

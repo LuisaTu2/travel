@@ -61,24 +61,19 @@ def register_routes(app: Flask, db):
     # curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photo", "sk": "beograd:4000"}, "action": "DELETE_COMMENT", "position": 0}'  http://localhost:5000/update-photo
     @app.route("/api/update-photo", methods=["POST"])
     def update_photo():
-        remote_address = request.remote_addr
+        # remote_address = request.remote_addr
         real_ip_addr = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)   
-        print("REMOTE ADDRESS: ", remote_address, real_ip_addr)
         data = request.get_json()
         reaction = data["reaction"]
-        print("DATA: ", data, reaction)
-
-        # update count likes 
-        update_expression = "SET reactions.#r.likes = reactions.#r.likes + :count"
-        expression_attribute_names = {"#r": f"{reaction}"}
-        expression_attribute_values = {":count": int("1")}
+        update_expression = "SET reactions.#reaction.likes = reactions.#reaction.likes + :count, reactions.#reaction.liked_by.#ip_address = :temp"
+        expression_attribute_names = {"#reaction": f"{reaction}", "#ip_address" : f"{real_ip_addr}"}
+        expression_attribute_values = {":count": int("1"), ":temp": ""}
         req = UpdateItemRequest(
             key=dict(data["key"]),
             update_expression=update_expression,
             expression_attribute_names=expression_attribute_names,
             expression_attribute_values=expression_attribute_values,
         )
-        print("REQ: ", req)
 
         db.update_item(TRAVELS, req)
 
