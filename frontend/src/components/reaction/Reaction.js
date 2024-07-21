@@ -17,6 +17,8 @@ export default function Reaction({reaction, isLast, ipAddress, pk, sk}) {
         "pink_heart": "🩷",
         "white_heart": "🤍",
         "light_blue_heart": "🩵",
+        "green_heart": "💚",
+        "orange_heart": "🧡",
         "serbia_flag": "🇷🇸",
         "flower": "🌺",
         "coffee": "☕",
