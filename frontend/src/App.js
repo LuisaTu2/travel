@@ -35,7 +35,7 @@ function App() {
       }) : []}
       <footer>
         <div>Curious about the implementation details? 
-        Check out the <strong><a href={ARCHITECTURE_PATH} className="linkArchitecture"> architecture</a></strong> page!</div> 
+        Check out the <strong><a href={ARCHITECTURE_PATH} className="linkArchitecture" target="_blank"> architecture</a></strong> page!</div> 
         <p className="made"> made with <span>&#129293; </span> in <span>&#127809; </span></p>
       </footer>
     </div>

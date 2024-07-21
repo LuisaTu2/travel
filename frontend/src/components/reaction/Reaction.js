@@ -11,13 +11,32 @@ export default function Reaction({reaction, isLast, ipAddress, pk, sk}) {
         "heart": "❤",
         "blue_heart": "💙",
         "black_heart": "🖤",
+        "grey_heart": "🩶",
+        "yellow_heart": "💛",
+        "purple_heart": "💜",
+        "white_heart": "🤍",
         "flower": "🌺",
         "coffee": "☕",
         "eyes": "👀",
         "rose": "🌹",
         "swimming_pool": "🌊",
         "exclamation": "❗",
-        "traffic_light": "🚦"
+        "traffic_light": "🚦",
+        "sparkle": "✨",
+        "minibus": "🚐",
+        "yellow": "🟡",
+        "zap" : "⚡",
+        "paintbrush": "🖌️",
+        "dog": "🐶",
+        "cat": "🐱",
+        "black_cat" : "🐈‍⬛",
+        "car": "🚗",
+        "fish": "🐠",
+        "feather": "🪶",
+        "candle": "🕯️",
+        "notes": "🎶",
+        "trolleybus": "🚎",
+        "fart": "💨"
     }
     const emojiName = reaction[0]
     const emoji = mapping[reaction[0]];
