@@ -3,8 +3,8 @@ from boto3.dynamodb.conditions import Key
 from constants import PARTITION_KEY, SORT_KEY, TRAVELS, PARTITION_KEY_VALUE
 
 from constants import TRAVELS
-import json
-from models import Photo, Reactions
+import simplejson
+from models import Photo, UpdateItemRequest
 
 
 def register_routes(app: Flask, db):
@@ -31,18 +31,13 @@ def register_routes(app: Flask, db):
                 KeyConditionExpression=Key(PARTITION_KEY).eq(PARTITION_KEY_VALUE)
                 & Key(SORT_KEY).begins_with(pattern),
             )["Items"]
+
             photos = [
                 dict(
                     Photo(
                         pk=item["pk"],
                         sk=item["sk"],
-                        reactions=dict(
-                            Reactions(
-                                doggo=item["reactions"]["doggo"],
-                                like=item["reactions"]["like"],
-                                macka=item["reactions"]["macka"],
-                            )
-                        ),
+                        reactions=item["reactions"],
                         title=item["title"],
                         description=item["description"],
                         link=item["link"],
@@ -51,25 +46,40 @@ def register_routes(app: Flask, db):
                 )
                 for item in items
             ]
-
-            res = json.dumps({"photos": photos})
+            res = simplejson.dumps({"photos": photos}, use_decimal=True)
         except Exception as e:
             raise Exception(f"[get_photos] could not retrieve photos \n {e}")
         else:
             return res
         
     # TODO: find a way for mačka!
+    # curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photo", "sk": "beograd:04000"}, "reaction": "doggo" }'  http://localhost:5000/api/update-photo
+   
+    # TODO: maybe allow comments one day!
     # curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photo", "sk": "beograd:4000"}, "action": "INCREMENT_REACTION", "reaction": "doggo" }'  http://localhost:5000/api/update-photo
     # curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photo", "sk": "beograd:4000"}, "action": "ADD_COMMENT", "comment": "cliclicli"}'  http://localhost:5000/update-photo
     # curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photo", "sk": "beograd:4000"}, "action": "DELETE_COMMENT", "position": 0}'  http://localhost:5000/update-photo
     @app.route("/api/update-photo", methods=["POST"])
     def update_photo():
         remote_address = request.remote_addr
-        original_address = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)   
-        print("REMOTE ADDRESS: ", remote_address, original_address)
+        real_ip_addr = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)   
+        print("REMOTE ADDRESS: ", remote_address, real_ip_addr)
         data = request.get_json()
-        print("DATA: ", data, request)
-        # req = db.build_update_item_request(data)
-        # db.update_item(TRAVELS, req)
-        # return f"[r-update-photo] updated photo {req} \n"
-        return ""
+        reaction = data["reaction"]
+        print("DATA: ", data, reaction)
+
+        # update count likes 
+        update_expression = "SET reactions.#r.likes = reactions.#r.likes + :count"
+        expression_attribute_names = {"#r": f"{reaction}"}
+        expression_attribute_values = {":count": int("1")}
+        req = UpdateItemRequest(
+            key=dict(data["key"]),
+            update_expression=update_expression,
+            expression_attribute_names=expression_attribute_names,
+            expression_attribute_values=expression_attribute_values,
+        )
+        print("REQ: ", req)
+
+        db.update_item(TRAVELS, req)
+
+        return f"[r-update-photo] updated photo {req} \n"

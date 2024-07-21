@@ -70,17 +70,13 @@ class TableStatus(str, Enum):
 
 
 # travels table models
-class Reactions(TypedDict):
-    like: int = 0
-    doggo: int = 0
-    macka: int = 0
 
 
 class Photo(Item):
     title: str = ""
     description: str = ""
     link: str = ""
-    reactions: Reactions = Reactions(like=0, doggo=0, macka=0)
+    reactions: dict = {}
     comments: List[str] = []
 
 

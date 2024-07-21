@@ -116,7 +116,7 @@ def register_cli(app: Flask, db, s3):
                 if isfile(join(f"{folder_path}", file)) and not file.endswith(".json")
             ]
             with open(PHOTOS_DATA_PATH) as f:
-                photos_data = json.load(f)
+                data = json.load(f)
 
             for file_name in file_names:
                 name = file_name.split(".")[0]
@@ -126,14 +126,19 @@ def register_cli(app: Flask, db, s3):
                 # then store photo item in dynamodb
                 sk = name
                 # TODO: check if exists in json file
-                title = photos_data[name]["title"]
-                description = photos_data[name]["description"]
+                photo = data[name]
+                title = photo["title"]
+                description = photo["description"]
+                reactions = {}
+                if "reactions" in photo:
+                    reactions = photo["reactions"]
                 url = s3.get_file_url(bucket_name, name)
                 photo = Photo(
                     pk=PARTITION_KEY_VALUE,
                     sk=sk,
                     title=title,
                     description=description,
+                    reactions=dict(reactions),
                     link=url,
                 )
                 db.put_item(table_name, photo)
@@ -149,6 +154,8 @@ def register_cli(app: Flask, db, s3):
                 f"[cli-upload-photos] uploaded files to s3 {bucket_name} bucket and ddb {table_name} table\n"
             )
 
+
+    # TODO: currently broken, update with ip addresses seen at
     # flask update-photo "photo" "beograd:4000" --action='INCREMENT_REACTION' --reaction='like'
     # flask update-photo "photo" "beograd:4000" --action='ADD_COMMENT' --comment='ddddd from cli'
     # flask update-photo "photo" "beograd:4000" --action='DELETE_COMMENT' --position=0

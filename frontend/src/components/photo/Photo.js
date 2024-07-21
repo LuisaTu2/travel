@@ -9,16 +9,16 @@ export default function Photo({ data }) {
         <p className="photoDesc">{data.description} </p>
 
         <p className="photoReactions" onClick={event => { console.log("EVENT: ", event); event.target.style.color = "grey"}}>
-          &#x2764; {data.reactions.like}{" "} 
-          {/* &#183;   */}
-          &#128049; 1{data.reactions.macka}{" "} 
-          {/* &#183;  */}
-          &#128054; 10
-          {/* {data.reactions.doggo} */}
+          &#x2764; 
+          {/* {data.reactions.like}{" "}  */}
+          &#183;  
+          &#128049; 
+          {/* {data.reactions.macka}{" "}  */}
+          &#183; 
+          &#128054;
+           {/* {data.reactions.doggo} */}
           {/* &#127788; 0 */}
         </p>
-        {/* <br /> */}
-        {/* <br /> */}
       </div>
     </div>
   );
