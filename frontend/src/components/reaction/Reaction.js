@@ -14,6 +14,10 @@ export default function Reaction({reaction, isLast, ipAddress, pk, sk}) {
         "flower": "🌺",
         "coffee": "☕",
         "eyes": "👀",
+        "rose": "🌹",
+        "swimming_pool": "🌊",
+        "exclamation": "❗",
+        "traffic_light": "🚦"
     }
     const emojiName = reaction[0]
     const emoji = mapping[reaction[0]];
