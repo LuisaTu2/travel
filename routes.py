@@ -59,12 +59,17 @@ def register_routes(app: Flask, db):
             return res
         
     # TODO: find a way for mačka!
-    # curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photo", "sk": "beograd:4000"}, "action": "INCREMENT_REACTION", "reaction": "doggo" }'  http://localhost:5000/update-photo
+    # curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photo", "sk": "beograd:4000"}, "action": "INCREMENT_REACTION", "reaction": "doggo" }'  http://localhost:5000/api/update-photo
     # curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photo", "sk": "beograd:4000"}, "action": "ADD_COMMENT", "comment": "cliclicli"}'  http://localhost:5000/update-photo
     # curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photo", "sk": "beograd:4000"}, "action": "DELETE_COMMENT", "position": 0}'  http://localhost:5000/update-photo
-    @app.route("/update-photo", methods=["POST"])
+    @app.route("/api/update-photo", methods=["POST"])
     def update_photo():
+        remote_address = request.remote_addr
+        original_address = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)   
+        print("REMOTE ADDRESS: ", remote_address, original_address)
         data = request.get_json()
-        req = db.build_update_item_request(data)
-        db.update_item(TRAVELS, req)
-        return f"[r-update-photo] updated photo {req} \n"
+        print("DATA: ", data, request)
+        # req = db.build_update_item_request(data)
+        # db.update_item(TRAVELS, req)
+        # return f"[r-update-photo] updated photo {req} \n"
+        return ""

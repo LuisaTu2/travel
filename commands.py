@@ -125,6 +125,7 @@ def register_cli(app: Flask, db, s3):
 
                 # then store photo item in dynamodb
                 sk = name
+                # TODO: check if exists in json file
                 title = photos_data[name]["title"]
                 description = photos_data[name]["description"]
                 url = s3.get_file_url(bucket_name, name)

@@ -8,7 +8,7 @@ export default function Photo({ data }) {
         <p className="photoTitle">{data.title}</p>
         <p className="photoDesc">{data.description} </p>
 
-        <p className="photoReactions">
+        <p className="photoReactions" onClick={event => { console.log("EVENT: ", event); event.target.style.color = "grey"}}>
           &#x2764; {data.reactions.like}{" "} 
           {/* &#183;   */}
           &#128049; 1{data.reactions.macka}{" "} 
