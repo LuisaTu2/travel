@@ -90,7 +90,7 @@ def register_routes(app: Flask, db):
         reaction = data["reaction"]
         ip_address = data["ip_address"]
         if ip_address != real_ip_addr:
-            return {}
+            print("CHECK SOMETHING HERE")
         
         update_expression = "SET reactions.#reaction.likes = reactions.#reaction.likes - :count REMOVE reactions.#reaction.liked_by.#ip_address"
         expression_attribute_names = {"#reaction": f"{reaction}", "#ip_address" : f"{real_ip_addr}"}

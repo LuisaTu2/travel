@@ -10,13 +10,13 @@
     margin: 0px;
 }
 
-.reactionSeen {
+.reactionLiked {
     display: flex;
     flex-direction: row;
     padding: 0px;
     margin: 0px;
     color: rgb(192, 187, 187);
-    pointer-events: none;
+    /* pointer-events: none; */
 }
 
 .emoji {
