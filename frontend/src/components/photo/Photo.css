@@ -15,22 +15,21 @@ img {
 }
 
 .photoTitle {
-    font-size: 17px;
+    font-size: 18px;
     font-weight: 700;
     margin:3px 0px 0px 0px;
     padding:0px;
 }
 
 .photoDesc{
-    font-size: 12.5px;
+    font-size: 15px;
     margin:0px;
     padding:0px;
 }
 
 .photoReactions {
-    margin: 5px 0px 16px 0px;
+    margin: 6px 0px 16px 0px;
     padding:0px;
-    font-size: 15px; /*have different fonts for emojis and numbers*/
     display: flex;
     flex-direction: row;
     gap: 7px;

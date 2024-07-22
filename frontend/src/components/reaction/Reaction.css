@@ -20,13 +20,13 @@
 }
 
 .emoji {
-    font-size: 15px;
+    font-size: 20px;
     padding: 0px;
     margin: 0px;
 }
 
 .likes {
-    font-size: 14px;
+    font-size: 18px;
     padding: 0px;
     margin: 0px;
     margin-left: 4px;
@@ -34,6 +34,7 @@
 }
 
 .dot {
+    font-size: 20px;
     padding: 0px;
     margin: 0px; 
     margin-left: 7px;
