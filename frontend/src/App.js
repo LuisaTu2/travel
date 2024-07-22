@@ -33,7 +33,7 @@ function App() {
       {ipAddress ? photos.map((photo) => {
         return <Photo data={photo} key={photo.title} ipAddress={ipAddress}/>;
       }) : []}
-      <div className="memories">
+      {ipAddress ? <div className="memories">
         <h3> memories </h3>
         <ul>
           <li className="memory"> long nights and splav music quickly slip into foggy mornings and tired red yugos honk impatiently at heavily caffeinated souls.</li>
@@ -46,7 +46,7 @@ function App() {
           coffee breaks at kafeteria. falling in love at šlep. gelato. oh, and did I mention cevapi? </li>
           <li className="memory"> etched forever in mah heart is singing lipe cvatu on a boat with y'all. </li>
         </ul>
-      </div>
+      </div> : "" }
       <footer>
         <div className="curious">Curious about the implementation details? 
         Check out the <strong><a href={ARCHITECTURE_PATH} className="linkArchitecture" target="_blank"> architecture</a></strong> page!</div> 
