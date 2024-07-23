@@ -28,6 +28,25 @@ img {
     color: #4d7261;
 }
 
+table {
+    margin: 20px 30px 50px 30px;
+    width: 90%;
+  }
+
+.header {
+    color: #4d7261;;
+    font-size: 20px;
+    width: 100px;
+    border-bottom: 1px solid #4d7261;
+    height: 30px;
+}
+
+.item{ 
+    font-size: 18px;
+    font-weight: 200;
+    border-bottom: 1px dotted;
+    height: 28px;
+}
 
 
 @media(max-width:600px){

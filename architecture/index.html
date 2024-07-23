@@ -37,10 +37,64 @@
             </ul>
         </p>
 
-        <h1>Data Models</h1>
+        <br />
+
+        <h1>DynamoDB and Data Models</h1>
         <p class="text">
-            Photo 
-            DynamoDB item [to be continued ...]
+            In DynamoDB:
+            <ul>
+                <li> data is organized in <strong>tables</strong>, a collection of <strong>items</strong> which are composed of <strong>attributes</strong>.</li>
+                <li> it is <strong>schemaless</strong>, meaning that there is no need to specify the data type like in a traditional relational database.</li>
+                <li> it supports primary keys. </li>
+            </ul>
+            
+            There are two types of primary keys in dynamoDB:
+            <ul>
+                <li> <strong>partition key</strong> which uniquely identifies each item in the table. </li>
+                <li> composite key of <strong> partition + sort key</strong> where each combination of pk + sk must be unique.</li>
+            </ul>
+            
+            For the travel project I used a <strong>composite</strong> key model where:
+            <ul>
+                <li> the partition key identifies a primary resource of a trip to be stored or displayed. For example, a photo or a written memory are unique records that 
+                are good candidates for a partition key. </li>
+                <li> I then used the sort key to identify which trip the item belongs to. I used the city's name as an identifier. Dates or years of when the trip was taken are also good options to
+                    uniquely identify an item and its associated trip.
+                </li>
+            </ul> 
+
+            Here is an example of how data is stored in my dynamoDB travels table: 
+            <table>
+                <tr>
+                    <th class="header">partition key </th>
+                    <th class="header">sort key  </th>
+                    <th class="header">title  </th>
+                    <th class="header">description  </th>
+                    <th class="header">likes</th>
+                </tr>
+                <tr>
+                    <th class="item">photo</th>
+                    <th class="item">beograd:001</th>
+                    <th class="item">river</th>
+                    <th class="item">danube waltz</th>
+                    <th class="item">3</th>
+                </tr>
+                <tr>
+                    <th class="item">memory</th>
+                    <th class="item">barcelona:909</th>
+                    <th class="item">sagrada</th>
+                    <th class="item">breathtaking</th>
+                    <th class="item">88</th>
+                </tr>
+              </table>
+            <div> 
+            Although this particular dataset is still quite relational in nature, I chose a table structure that allows for some flexibility for future trips. 
+            For example, I could extend the partition key by adding recommendations, attractions or landmarks as new items and leverage the flexibility 
+            of dynamoDB in case I wanted to add more attributes. With dynamoDB I could keep expanding the scope of the project without creating new tables
+             and having to define relationships between them. I still recommend jotting down which attributes best fit the scope of the project to avoid bloating the table with too many attribues
+             that might make it hard to keep track of and manage. 
+            </div>
+            
         </p>
         
         <h1>Background</h1>
@@ -65,7 +119,7 @@
         <h1>Thank you</h1>
         <p class="text">
             I hope you enjoyed the <a href="http://18.216.159.247" id="travels"> travels</a> </li> project as much as I did when building and piecing together each component. 
-            I always welcome constructive feedback and if there is anything that stood out or, if you would simply like to say hi, send me a line at
+            I always welcome constructive feedback and if there is anything that stood out or, if you would simply like to say hi, drop me a line at
             <a href="mailto:luisa.pegoraro@gmail.com" id="email">luisa.pegoraro@gmail.com</a>. Until next time.
             <p id="goodbye">  &#382;iveli! &#183;  enjoy!</p> 
         </p>
