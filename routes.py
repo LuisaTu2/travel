@@ -51,10 +51,10 @@ def register_routes(app: Flask, db):
             raise Exception(f"[get_photos] could not retrieve photos \n {e}")
         else:
             return res
-        
+
     # TODO: find a way for mačka!
     # curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photo", "sk": "beograd:04000"}, "reaction": "doggo" }'  http://localhost:5000/api/update-photo
-   
+
     # TODO: maybe allow comments one day!
     # curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photo", "sk": "beograd:4000"}, "action": "INCREMENT_REACTION", "reaction": "doggo" }'  http://localhost:5000/api/update-photo
     # curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photo", "sk": "beograd:4000"}, "action": "ADD_COMMENT", "comment": "cliclicli"}'  http://localhost:5000/update-photo
@@ -62,7 +62,7 @@ def register_routes(app: Flask, db):
     @app.route("/api/update-photo", methods=["POST"])
     def update_photo():
         # remote_address = request.remote_addr
-        real_ip_addr = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)   
+        real_ip_addr = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
         data = request.get_json()
         reaction = data["reaction"]
         update_expression = "SET reactions.#reaction.likes = reactions.#reaction.likes + :count, reactions.#reaction.liked_by.#ip_address = :temp"
@@ -78,20 +78,20 @@ def register_routes(app: Flask, db):
         db.update_item(TRAVELS, req)
 
         return f"[r-update-photo] updated photo {req} \n"
-    
+
 
 
     # curl --header "Content-Type: application/json; Charset='UTF-8'" -X POST -d '{"key": {"pk": "photo", "sk": "beograd:02000"}, "reaction": "sun", "ip_address" : "127.0.0.1" }'  http://localhost:5000/api/delete-reaction
     @app.route("/api/delete-reaction", methods=["POST"])
     def delete_reaction():
         # remote_address = request.remote_addr
-        real_ip_addr = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)   
+        real_ip_addr = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
         data = request.get_json()
         reaction = data["reaction"]
         ip_address = data["ip_address"]
         if ip_address != real_ip_addr:
             print("CHECK SOMETHING HERE")
-        
+
         update_expression = "SET reactions.#reaction.likes = reactions.#reaction.likes - :count REMOVE reactions.#reaction.liked_by.#ip_address"
         expression_attribute_names = {"#reaction": f"{reaction}", "#ip_address" : f"{real_ip_addr}"}
         expression_attribute_values = {":count": int("1")}

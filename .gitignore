@@ -5,7 +5,7 @@ bucket_policy.py
 images/
 frontend/node_modules
 frontend/package-lock.json
-frontend/src/constants.js
+# frontend/src/constants.js
 requirements.txt
 .gitignore
 INSTRUCTIONS.md
