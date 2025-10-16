@@ -1,12 +1,14 @@
 export const GET_PHOTOS_BEOGRAD =
-  "http://18.216.159.247/api/get-photos?pattern=beograd";
-export const ARCHITECTURE_PATH = "http://18.216.159.247/architecture/";
-export const UPDATE_PHOTO = "http://18.216.159.247/api/update-photo";
+  "https://travels.findingluisa.com/api/get-photos?pattern=beograd";
+export const ARCHITECTURE_PATH =
+  "https://travels.findingluisa.com/architecture/";
+export const UPDATE_PHOTO = "https://travels.findingluisa.com/api/update-photo";
 export const HEADERS = {
   "Content-Type": "application/json",
   Accept: "application/json",
 };
-export const DELETE_LIKE = "http://18.216.159.247/api/delete-reaction";
+export const DELETE_LIKE =
+  "https://travels.findingluisa.com/api/delete-reaction";
 export const mapping = {
   blue_heart: "💙",
   grey_heart: "🩶",
